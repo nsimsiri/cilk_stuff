@@ -1,4 +1,5 @@
 #include<iostream>
+#include<algorithm>
 #include<cilk/cilk.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -6,6 +7,38 @@
 
 using namespace std;
 
+template <class E>
+void print(E *A, int n){
+	for(int i = 0; i < n; i++){
+		printf("%d ", A[i]);
+	}
+	printf("\n");
+}
+
+template <class E>
+E* newA(int n, E k){
+	E* A = (E*) malloc(n*sizeof(E));
+	cilk_for(int i = 0; i < n; i++){A[i]=k;}
+	return A;
+}
+
+template <class F>
+int filter(int* A, int n, F f){
+	bool *B = newA<bool>(n, 0);
+	cilk_for(int i = 0; i < n; i++){
+		if (f(A[i])) B[i] = true;
+		else B[i] = false;
+	}
+	print<bool>(B, n);
+	print<int>(A, n);
+	return n;
+}
+
+struct isLessThanPivot { 
+	int pivot; 
+	isLessThanPivot(int j): pivot(j){};
+	bool operator() (int x) {return x<pivot;}
+};
 
 void swap(int *a, int *b){
 	int temp = *a;
@@ -28,13 +61,6 @@ void partition(int *A, int start, int end, int *p){
 }
 
 
-
-void print(int *A, int n){
-	for(int i = 0; i < n; i++){
-		printf("%d ", A[i]);
-	}
-	printf("\n");
-}
 void quicksort(int* A, int l, int r){
 	srand(time(NULL));
 	if (r-l==2){
@@ -52,11 +78,14 @@ void quicksort(int* A, int l, int r){
 
 int main(){
 	int A[] = {1,9,2,6,3,5};
-	quicksort(A, 0, sizeof(A)/sizeof(int));
-	// int p = -1;
+	isLessThanPivot F = isLessThanPivot(5);
+	filter(A, sizeof(A)/sizeof(int), F);
+
+	// quicksort(A, 0, sizeof(A)/sizeof(int	// int p = -1;
 	// partition(A, 0, (sizeof(A)/sizeof(int)), &p);
-	print(A, sizeof(A)/sizeof(int));
-	// printf("\n%d\n", p);
+	// print(A, sizeof(A)/sizeof(int));
+	// printf("\n%d\n", p);));
+
 
 
 }
