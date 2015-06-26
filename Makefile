@@ -9,6 +9,10 @@ qs: qs.cpp
 test: test.c
 	$(CC) $(CFLAGS) test.c -o test
 
+utils: utils.cpp
+	$(CC) $(CFLAGS) -std=c++11 utils.cpp -o utils
+
 clean:
 	rm -rf qs
 	rm -rf test
+	rm -rf utils
