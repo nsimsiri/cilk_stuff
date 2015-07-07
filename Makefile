@@ -7,7 +7,7 @@ qs: qs.cpp
 	$(CC) $(CFLAGS) -w qs.cpp -o qs
 
 test: test.c
-	$(CC) $(CFLAGS) test.c -o test
+	clang $(CFLAGS) test.c -o test
 
 utils: utils.cpp
 	$(CC) $(CFLAGS) -std=c++11 utils.cpp -o utils

@@ -1,9 +1,11 @@
-#include<iostream>
-#include<algorithm>
-#include<cilk/cilk.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
+
+#include <iostream>
+#include <algorithm>
+#include <cilk/cilk.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 
 using namespace std;
 
@@ -13,7 +15,7 @@ void print(E *A, int n){
 		printf("%d ", A[i]);
 	}
 	printf("\n");
-}
+
 
 template <class E>
 E* newA(int n, E k){
@@ -31,6 +33,7 @@ int filter(int* A, int n, F f){
 	}
 	print<bool>(B, n);
 	print<int>(A, n);
+	free(B);
 	return n;
 }
 
