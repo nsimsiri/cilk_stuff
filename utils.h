@@ -3,8 +3,9 @@
 
 
 // FUNCTION OBJECTS
-template <class E>
-struct SumF { E operator() (E &a, E &b) const { return a+b; } };
+template <class E> struct SumF { E operator() (E &a, E &b) const { return a+b; } };
+template <class E> struct CopyF { E operator() (E &x) const { return x; } };
+
 
 // FUNCTIONS
 template <class E, class F> E* map(E* In, int n, F f);

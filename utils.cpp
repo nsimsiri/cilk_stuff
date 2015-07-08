@@ -53,12 +53,15 @@ E* reduce_w_partial_prefix(E *In, int n, BinaryPredicateF f){
 }
 
 template <class E, class BinaryPredicateF>
-void prescan_partial_prefix(E *In, int st, int mid, int ed, E value, BinaryPredicateF f){
+void prescan_partial_prefix(E *In, int st, int ed, E value, BinaryPredicateF f){
+	int mid = st +((int)pow(2,(int)log2(ed-st))) - 1; //st + 2^(lg(ed-st)) - 1
+	if (ed==st) mid = ed;
+	// printf("ST=%d MID=%d ED=%d\n", st, mid, ed);
 	In[mid]= f(In[mid], value);
-	printf("ST=%d MID=%d ED=%d\n", st, mid, ed);
 	if (mid%2!=0){
-		prescan_partial_prefix(In, st, (mid+st)/2, mid, value, f);
-		prescan_partial_prefix(In, mid+1, (mid+1+ed)/2, ed, In[mid], f);
+		prescan_partial_prefix(In, st, mid-1, value, f);
+		cilk_spawn prescan_partial_prefix(In, mid+1, ed, In[mid], f);
+		// cilk_sync;
 	}
 }
 
@@ -68,11 +71,9 @@ E* scan(E *In, int n, BinaryPredicateF f){
 	if (n<=1) return In;
 	E* Out = cloneA(In, n);
 	Out = reduce_w_partial_prefix(Out, n, f);
-	printA(Out, n);
-	int end = 1;
-	if (n%2==0) end=0;
-	int root = ((int)pow(2,(int)log2(n-end))-1);
-	prescan_partial_prefix(Out, 0, root, n-end, 0, f); 
+	E end = Out[n-1];
+	prescan_partial_prefix(Out, 0, n-1, 0, f); 
+	Out[n-1] = end;
 	return Out;
 }
 
@@ -106,13 +107,16 @@ int main(int argc, char* argv[]){
 	int *D = newA(N, 1);
 	printf("[Test Scan - input is array of 1's]\n");
 	// printf("serial-scan: ");
-	// int *D1 = serial_scan(D, N, SumF<int>());
+	int *D1 = serial_scan(D, N, SumF<int>());
 	// printA(D1, N);
-	printf("parallel-scan: ");
-	int *D2 = scan(D, N, SumF<int>());
-	printA(D2, N);
+	// printf("parallel-scan: ");
+	// int *D2 = scan(D, N, SumF<int>());
+	// printA(D2, N);
 
+	// bench at  /usr/bin/time ./utils 1000000000
+	/*
+	serial: 
+	 29.85 real        27.79 user        20.13 sys
 
-
-
+	*/
 }
