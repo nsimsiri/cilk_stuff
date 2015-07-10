@@ -69,8 +69,9 @@ void prescan_partial_prefix(E *In, int st, int ed, E value, BinaryPredicateF f){
 template <class E, class BinaryPredicateF>
 E* scan(E *In, int n, BinaryPredicateF f){
 	if (n<=1) return In;
-	E* Out = cloneA(In, n);
-	Out = reduce_w_partial_prefix(Out, n, f);
+	// E* Out = cloneA(In, n);
+	E* Out = In;
+	// Out = reduce_w_partial_prefix(Out, n, f);
 	E end = Out[n-1];
 	prescan_partial_prefix(Out, 0, n-1, 0, f); 
 	Out[n-1] = end;
@@ -107,10 +108,10 @@ int main(int argc, char* argv[]){
 	int *D = newA(N, 1);
 	printf("[Test Scan - input is array of 1's]\n");
 	// printf("serial-scan: ");
-	int *D1 = serial_scan(D, N, SumF<int>());
+	// int *D1 = serial_scan(D, N, SumF<int>());
 	// printA(D1, N);
 	// printf("parallel-scan: ");
-	// int *D2 = scan(D, N, SumF<int>());
+	int *D2 = scan(D, N, SumF<int>());
 	// printA(D2, N);
 
 	// bench at  /usr/bin/time ./utils 1000000000
